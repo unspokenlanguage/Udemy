@@ -11,7 +11,7 @@ class App{
 		const container = document.createElement( 'div' );
 		document.body.appendChild( container );
         
-		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
+		this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 );
 		this.camera.position.set( 0, 4, 14 );
         
 		this.scene = new THREE.Scene();
@@ -33,6 +33,9 @@ class App{
 		container.appendChild( this.renderer.domElement );
 		
         //Add code here
+
+        this.LoadingBar = new LoadingBar();
+        this.loadFBX();
         
         
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
@@ -60,11 +63,54 @@ class App{
         } );
     }
     
-    loadGLTF(){
-        const self = this;
-    }
+    // loadGLTF(){
+    //     const self = this;
+    //     const loader = new GLTFLoader().setPath('../../assets/');
+
+    //     loader.load(
+    //         'office-chair.glb',
+    //         function(gltf){
+    //             self.chair = gltf.scene;
+    //             const bbox =  new THREE.Box3().setFromObject(gltf.scene);
+    //             console.log(`min:${bbox.min.x.toFixed(2)},${bbox.min.y.toFixed(2)},${bbox.min.z.toFixed(2)} -  max:${bbox.max.x.toFixed(2)},${bbox.max.y.toFixed(2)},${bbox.max.z.toFixed(2)}`);
+                
+    //             self.scene.add(gltf.scene);
+    //             self.LoadingBar.visible = false;
+    //             self.renderer.setAnimationLoop(self.render.bind(self));
+    //         },
+    //         function(xhr){
+    //             self.LoadingBar.progress = xhr.loaded/xhr.total;
+    //         },
+    //         function(err){
+    //             console.log('error' + err);
+    //         }
+    //     )
+
+    // }
     
     loadFBX(){
+        const self = this;
+        const loader = new FBXLoader().setPath('../../assets/building/');
+
+        loader.load(
+            'container.fbx',
+            function(object){
+                object.scale.multiplyScalar(0.01); 
+                self.chair = object;
+                const bbox =  new THREE.Box3().setFromObject(object);
+                console.log(`min:${bbox.min.x.toFixed(2)},${bbox.min.y.toFixed(2)},${bbox.min.z.toFixed(2)} -  max:${bbox.max.x.toFixed(2)},${bbox.max.y.toFixed(2)},${bbox.max.z.toFixed(2)}`);
+                
+                self.scene.add(object);
+                self.LoadingBar.visible = false;
+                self.renderer.setAnimationLoop(self.render.bind(self));
+            },
+            function(xhr){
+                self.LoadingBar.progress = xhr.loaded/xhr.total;
+            },
+            function(err){
+                console.log('error' + err);
+            }
+        )
     }
     
     resize(){
@@ -74,7 +120,9 @@ class App{
     }
     
 	render( ) {   
-        this.chair.rotateY( 0.01 );
+        //this.chair.rotateY( 0.01 );
+        //this.chair.scale(0.01, 0.01, 0.01);
+        //this.chair.position(0.01,0.01,0.01)
         this.renderer.render( this.scene, this.camera );
     }
 }

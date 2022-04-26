@@ -24,12 +24,13 @@ class App{
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		container.appendChild( this.renderer.domElement );
 		
-        const geometry = new THREE.TorusKnotBufferGeometry( 0.8, 0.3, 120, 16 ); 
+        const geometry = new THREE.BoxBufferGeometry()
         
-        const material = new THREE.MeshBasicMaterial( { color: 0xFF0000 });
-
+        const material = new THREE.MeshStandardMaterial( { color: 0xFF0000});
+    
         this.mesh = new THREE.Mesh( geometry, material );
-        
+        this.mesh.position.set(0,0 ,-15)
+
         this.scene.add(this.mesh);
         
         const controls = new OrbitControls( this.camera, this.renderer.domElement );
@@ -46,7 +47,7 @@ class App{
     }
     
 	render( ) {   
-        this.mesh.rotateY( 0.01 );
+        this.mesh.rotateY( 0.03 );
         this.renderer.render( this.scene, this.camera );
     }
 }
